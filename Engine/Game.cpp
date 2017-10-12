@@ -25,7 +25,8 @@ Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
-	player(gfx,50)
+	player(gfx,50),
+	ai(gfx, Graphics::ScreenWidth - Paddle::width - 50)
 {
 }
 
@@ -39,9 +40,12 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	if (wnd.kbd.KeyIsPressed('W')) player.MoveBy(-4);
+	if (wnd.kbd.KeyIsPressed('S')) player.MoveBy(4);
 }
 
 void Game::ComposeFrame()
 {
 	player.Draw();
+	ai.Draw();
 }

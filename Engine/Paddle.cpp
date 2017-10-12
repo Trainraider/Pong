@@ -11,7 +11,12 @@ void Paddle::MoveBy(short deltaY)
 {
 	y += deltaY;
 	if (y < 0) y = 0;
-	if (y + height >= Graphics::ScreenHeight) y = Graphics::ScreenHeight - height - 1;
+	if (y + height >= Graphics::ScreenHeight) y = Graphics::ScreenHeight - height;
+}
+
+void Paddle::MoveAuto()
+{
+	//AI motion goes here
 }
 
 void Paddle::Draw()

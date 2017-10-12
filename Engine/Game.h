@@ -44,5 +44,6 @@ private:
 	/********************************/
 	/*  User Variables              */
 	Paddle player;
+	Paddle ai;
 	/********************************/
 };
