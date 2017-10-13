@@ -8,7 +8,8 @@ class Paddle
 public:
 	Paddle(Graphics& in_gfx, Ball& in_ball, const short in_x);
 	void MoveBy(short deltaY);
-	void MoveAuto();
+	void MoveAuto(short deltaY);
+	Coord GetCoord() const;
 	void Draw();
 public:
 	static constexpr short width = 20;

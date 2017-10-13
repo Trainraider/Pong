@@ -43,7 +43,16 @@ void Game::UpdateModel()
 {
 	if (wnd.kbd.KeyIsPressed('W')) player.MoveBy(-4);
 	if (wnd.kbd.KeyIsPressed('S')) player.MoveBy(4);
+	ai.MoveAuto(4);
 	ball.Move();
+	if (Collision(player.GetCoord(), player.width, player.height, ball.GetCoord(), ball.dimension, ball.dimension))
+	{
+		ball.Collision(player, true);
+	}
+	if (Collision(ai.GetCoord(), ai.width, ai.height, ball.GetCoord(), ball.dimension, ball.dimension))
+	{
+		ball.Collision(ai, false);
+	}
 }
 
 void Game::DrawNet()
@@ -61,4 +70,20 @@ void Game::ComposeFrame()
 	ai.Draw();
 	ball.Draw();
 	DrawNet();
+}
+
+bool Game::Collision(Coord coord0, short width0, short height0, Coord coord1, short width1, short height1)
+{
+	short right0 = coord0.x + width0;
+	short bottom0 = coord0.y + height0;
+	short right1 = coord1.x + width1;
+	short bottom1 = coord1.y + height1;
+	if (coord0.x <= right1 &&
+		bottom0 >= coord1.y &&
+		coord0.y <= bottom1 &&
+		right0 >= coord1.x)
+	{
+		return true;
+	}
+	return false;
 }

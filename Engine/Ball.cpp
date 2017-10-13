@@ -1,4 +1,5 @@
 #include "Ball.h"
+#include "Paddle.h"
 
 Ball::Ball(Graphics & gfx)
 	:
@@ -9,9 +10,23 @@ Ball::Ball(Graphics & gfx)
 	Respawn();
 }
 
+Coord Ball::GetCoord() const
+{
+	return {x,y};
+}
+
 void Ball::Draw()
 {
 	gfx.PutRect(x, y, dimension, dimension, 0xFFFFFF);
+}
+
+void Ball::Collision(Paddle& paddle, bool leftSideOfScreen)
+{
+	if (leftSideOfScreen)
+		x = paddle.GetCoord().x + paddle.width;
+	else
+		x = paddle.GetCoord().x - dimension;
+	hSpeed = -1 * (hSpeed + 1);
 }
 
 void Ball::BounceOffWall()

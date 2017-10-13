@@ -39,6 +39,8 @@ private:
 	/********************************/
 	/*  User Functions              */
 	void DrawNet();
+	bool Collision(Coord coord0, short width0, short height0,
+		Coord coord1, short width1, short height1);
 	/********************************/
 private:
 	MainWindow& wnd;
