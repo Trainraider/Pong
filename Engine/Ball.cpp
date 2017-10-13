@@ -23,10 +23,15 @@ void Ball::Draw()
 void Ball::Collision(Paddle& paddle, bool leftSideOfScreen)
 {
 	if (leftSideOfScreen)
+	{
 		x = paddle.GetCoord().x + paddle.width;
+		hSpeed = -1 * (hSpeed - 2);
+	}
 	else
+	{
 		x = paddle.GetCoord().x - dimension;
-	hSpeed = -1 * (hSpeed + 1);
+		hSpeed = -1 * (hSpeed + 2);
+	}
 }
 
 void Ball::BounceOffWall()
@@ -57,7 +62,7 @@ void Ball::Respawn()
 	{
 		hSpeed = sDist(rng);
 		vSpeed = sDist(rng);
-	} while (!hSpeed);
+	} while (!(hSpeed && vSpeed));
 	x = Graphics::ScreenWidth / 2 - radius;
 	y = Graphics::ScreenHeight / 2 - radius;
 }

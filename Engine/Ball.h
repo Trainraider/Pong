@@ -2,7 +2,7 @@
 #include "Graphics.h"
 #include "Coord.h"
 #include <random>
-#include "Paddle.h"
+class Paddle;
 
 class Ball
 {
