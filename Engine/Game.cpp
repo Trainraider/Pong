@@ -21,12 +21,13 @@
 #include "MainWindow.h"
 #include "Game.h"
 
-Game::Game( MainWindow& wnd )
+Game::Game(MainWindow& wnd)
 	:
-	wnd( wnd ),
-	gfx( wnd ),
-	player(gfx,50),
-	ai(gfx, Graphics::ScreenWidth - Paddle::width - 50)
+	wnd(wnd),
+	gfx(wnd),
+	player(gfx, ball, 50),
+	ai(gfx, ball, Graphics::ScreenWidth - Paddle::width - 50),
+	ball(gfx)
 {
 }
 
@@ -42,10 +43,22 @@ void Game::UpdateModel()
 {
 	if (wnd.kbd.KeyIsPressed('W')) player.MoveBy(-4);
 	if (wnd.kbd.KeyIsPressed('S')) player.MoveBy(4);
+	ball.Move();
+}
+
+void Game::DrawNet()
+{
+	for (int i = 0; i < Graphics::ScreenHeight; i++)
+	{
+		if (int(i/7.)%2 == 0)
+		gfx.PutPixel(Graphics::ScreenWidth / 2, i, 0xFFFFFF);
+	}
 }
 
 void Game::ComposeFrame()
 {
 	player.Draw();
 	ai.Draw();
+	ball.Draw();
+	DrawNet();
 }

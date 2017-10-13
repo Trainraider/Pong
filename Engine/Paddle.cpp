@@ -1,8 +1,10 @@
 #include "Paddle.h"
 
-Paddle::Paddle(Graphics& in_gfx, const short in_x)
+
+Paddle::Paddle(Graphics& in_gfx, Ball& in_ball, const short in_x)
 	:
-	gfx(in_gfx)
+	gfx(in_gfx),
+	ball(in_ball)
 {
 	x = in_x;
 }

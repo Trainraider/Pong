@@ -24,6 +24,7 @@
 #include "Mouse.h"
 #include "Graphics.h"
 #include "Paddle.h"
+#include "Ball.h"
 
 class Game
 {
@@ -37,6 +38,7 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
+	void DrawNet();
 	/********************************/
 private:
 	MainWindow& wnd;
@@ -45,5 +47,6 @@ private:
 	/*  User Variables              */
 	Paddle player;
 	Paddle ai;
+	Ball ball;
 	/********************************/
 };
