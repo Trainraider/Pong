@@ -19,7 +19,7 @@ void Paddle::MoveBy(short deltaY)
 
 void Paddle::MoveAuto(short deltaY)
 {
-	short yCenter = y + height / 2;
+	float yCenter = y + height / 2;
 	Coord ballCoord = ball.GetCoord();
 	if (abs(ballCoord.y - yCenter) >= 50)
 	{
@@ -37,5 +37,5 @@ Coord Paddle::GetCoord() const
 
 void Paddle::Draw()
 {
-	gfx.PutRect(x, y, width, height, 0xFFFFFF);
+	gfx.PutRect((short)x, (short)y, width, height, 0xFFFFFF);
 }
