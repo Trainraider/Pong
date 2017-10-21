@@ -68,7 +68,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Libraries\eigen-eigen-5a0156e40feb;</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Libraries\eigen-eigen-5a0156e40feb;</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -147,6 +152,7 @@
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="NeuralNet.h" />
     <ClInclude Include="Paddle.h" />
     <ClInclude Include="Resource.h" />
   </ItemGroup>
@@ -159,6 +165,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="NeuralNet.cpp" />
     <ClCompile Include="Paddle.cpp" />
   </ItemGroup>
   <ItemGroup>

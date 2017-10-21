@@ -57,6 +57,9 @@
     <ClInclude Include="Coord.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NeuralNet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp">
@@ -84,6 +87,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Ball.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralNet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
