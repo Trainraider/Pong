@@ -32,12 +32,7 @@ void Ball::Collision(Paddle& paddle, bool leftSideOfScreen)
 		x = paddle.GetCoord().x - dimension;
 		hSpeed = -1 * (hSpeed + 2);
 	}
-	//vSpeed = (paddle.GetCoord().y + (Paddle::height / 2) - y)*(8 / Paddle::height);
-	float centerY = paddle.GetCoord().y + (Paddle::height / 2);
-	float numerator = centerY - y;
-	float denomenator = (8.0f / (float)Paddle::height);
-	float vSpeedPre = -2.0f * numerator * denomenator;
-	vSpeed = vSpeedPre;
+	vSpeed = -2.0f * ((paddle.GetCoord().y + (Paddle::height / 2)) - y) * (8.0f / (float)Paddle::height);
 
 }
 
