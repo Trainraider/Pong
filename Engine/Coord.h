@@ -2,5 +2,5 @@
 
 struct Coord
 {
-	short x, y;
+	float x, y;
 };

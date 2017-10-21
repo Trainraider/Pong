@@ -74,10 +74,10 @@ void Game::ComposeFrame()
 
 bool Game::Collision(Coord coord0, short width0, short height0, Coord coord1, short width1, short height1)
 {
-	short right0 = coord0.x + width0;
-	short bottom0 = coord0.y + height0;
-	short right1 = coord1.x + width1;
-	short bottom1 = coord1.y + height1;
+	float right0 = coord0.x + width0;
+	float bottom0 = coord0.y + height0;
+	float right1 = coord1.x + width1;
+	float bottom1 = coord1.y + height1;
 	if (coord0.x <= right1 &&
 		bottom0 >= coord1.y &&
 		coord0.y <= bottom1 &&

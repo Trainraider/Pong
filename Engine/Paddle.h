@@ -15,8 +15,8 @@ public:
 	static constexpr short width = 20;
 	static constexpr short height = 200;
 private:
-	short x;
-	short y = Graphics::ScreenHeight/2 - height/2;
+	float x;
+	float y = Graphics::ScreenHeight/2 - height/2;
 	Graphics& gfx;
 	Ball& ball;
 };

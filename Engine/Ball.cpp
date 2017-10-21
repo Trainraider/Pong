@@ -5,7 +5,7 @@ Ball::Ball(Graphics & gfx)
 	:
 	gfx(gfx),
 	rng(rd()),
-	sDist(-4,4)
+	sDist(-4.0f,4.0f)
 {
 	Respawn();
 }
@@ -17,16 +17,23 @@ Coord Ball::GetCoord() const
 
 void Ball::Draw()
 {
-	gfx.PutRect(x, y, dimension, dimension, 0xFFFFFF);
+	gfx.PutRect((short)x, (short)y, dimension, dimension, 0xFFFFFF);
 }
 
 void Ball::Collision(Paddle& paddle, bool leftSideOfScreen)
 {
 	if (leftSideOfScreen)
+	{
 		x = paddle.GetCoord().x + paddle.width;
+		hSpeed = -1 * (hSpeed - 2);
+	}
 	else
+	{
 		x = paddle.GetCoord().x - dimension;
-	hSpeed = -1 * (hSpeed + 1);
+		hSpeed = -1 * (hSpeed + 2);
+	}
+	vSpeed = -2.0f * ((paddle.GetCoord().y + (Paddle::height / 2)) - y) * (8.0f / (float)Paddle::height);
+
 }
 
 void Ball::BounceOffWall()
@@ -57,17 +64,17 @@ void Ball::Respawn()
 	{
 		hSpeed = sDist(rng);
 		vSpeed = sDist(rng);
-	} while (!hSpeed);
+	} while (abs(hSpeed) < 1.5);
 	x = Graphics::ScreenWidth / 2 - radius;
 	y = Graphics::ScreenHeight / 2 - radius;
 }
 
-short Ball::CenterX()
+float Ball::CenterX()
 {
 	return x + radius;
 }
 
-short Ball::CenterY()
+float Ball::CenterY()
 {
 	return y + radius;
 }
