@@ -1,7 +1,9 @@
 #include "NeuralNet.h"
+using namespace Eigen;
 
 NeuralNet::NeuralNet()
 	:
-	rng(std::random_device())
+	rng(rd())
 {
+	
 }
