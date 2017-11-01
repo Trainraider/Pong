@@ -27,7 +27,8 @@ Game::Game(MainWindow& wnd)
 	gfx(wnd),
 	player(gfx, ball, 50),
 	ai(gfx, ball, Graphics::ScreenWidth - Paddle::width - 50),
-	ball(gfx)
+	ball(gfx),
+	brain()
 {
 }
 
