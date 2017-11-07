@@ -9,6 +9,7 @@ class Ball
 public:
 	Ball(Graphics& gfx);
 	Coord GetCoord() const;
+	Coord GetSpeed() const;
 	void Move();
 	void Draw();
 	void Collision( Paddle& paddle, bool leftSideOfScreen);

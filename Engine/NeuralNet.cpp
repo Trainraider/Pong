@@ -1,12 +1,17 @@
 #include "NeuralNet.h"
-using namespace Eigen;
+#include "Graphics.h"
+#include <cmath>
+
 
 NeuralNet::NeuralNet()
 	:
 	rng(rd()),
 	dist(-5.0f,5.0f)
 {
-	RANDOMIZEMATRIXLIST(weightList, LAYERS, neurons, neurons)
-	RANDOMIZEMATRIXLIST(layerBiasList, LAYERS, neurons, 1)
 
+}
+
+float NeuralNet::Sigmoid(float x)
+{
+	return std::tanh(x/4)/2 + 0.5f;
 }

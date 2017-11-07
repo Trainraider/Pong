@@ -27,8 +27,7 @@ Game::Game(MainWindow& wnd)
 	gfx(wnd),
 	player(gfx, ball, 50),
 	ai(gfx, ball, Graphics::ScreenWidth - Paddle::width - 50),
-	ball(gfx),
-	brain()
+	ball(gfx)
 {
 }
 
@@ -54,6 +53,10 @@ void Game::UpdateModel()
 	{
 		ball.Collision(ai, false);
 	}
+
+
+
+
 }
 
 void Game::DrawNet()

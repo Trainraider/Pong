@@ -15,6 +15,11 @@ Coord Ball::GetCoord() const
 	return {x,y};
 }
 
+Coord Ball::GetSpeed() const
+{
+	return {hSpeed,vSpeed};
+}
+
 void Ball::Draw()
 {
 	gfx.PutRect((short)x, (short)y, dimension, dimension, 0xFFFFFF);
