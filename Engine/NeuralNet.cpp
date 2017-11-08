@@ -49,6 +49,10 @@ int NeuralNet::Think()
 {
 	for (int i = 0; i < LAYERS + 1; i++) {
 		weights[i]->DotBias(*activations[i], *biases[i], *activations[i + 1]);
+		int size = activations[i + 1]->GetSize();
+		for (int j = 0; j < size; j++) {
+			(*activations[i + 1])(j) = Sigmoid((*activations[i + 1])(j));
+		}
 	}
 	int decision;
 	if ((*activations[LAYERS + 1])(0) > (*activations[LAYERS + 1])(1)) {

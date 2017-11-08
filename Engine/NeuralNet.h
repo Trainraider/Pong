@@ -7,7 +7,7 @@
 
 #define INPUTS 5
 #define OUTPUTS 3
-#define LAYERS 5
+#define LAYERS 2
 
 #define UP 0
 #define DOWN 1
@@ -15,6 +15,7 @@
 
 class NeuralNet
 {
+	static constexpr int neurons = 5;
 public:
 	NeuralNet();
 	~NeuralNet();
@@ -25,7 +26,6 @@ private:
 	float XLinmoid(float x);
 	float YLinmoid(float y);
 private:
-	static constexpr int neurons = 9;
 	std::random_device rd;
 	std::mt19937 rng;
 	std::uniform_real_distribution<float> dist;
