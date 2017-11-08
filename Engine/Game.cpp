@@ -27,7 +27,8 @@ Game::Game(MainWindow& wnd)
 	gfx(wnd),
 	player(gfx, ball, 50),
 	ai(gfx, ball, Graphics::ScreenWidth - Paddle::width - 50),
-	ball(gfx)
+	ball(gfx),
+	brain()
 {
 }
 
@@ -41,8 +42,15 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	if (wnd.kbd.KeyIsPressed('W')) player.MoveBy(-4);
-	if (wnd.kbd.KeyIsPressed('S')) player.MoveBy(4);
+	//if (wnd.kbd.KeyIsPressed('W')) player.MoveBy(-4);
+	//if (wnd.kbd.KeyIsPressed('S')) player.MoveBy(4);
+	brain.TakeInputs(ball, player);
+	switch (brain.Think())
+	{
+	case UP: player.MoveBy(-4); break;
+	case DOWN: player.MoveBy(4); break;
+	case NOTHING: break;
+	}
 	ai.MoveAuto(4);
 	ball.Move();
 	if (Collision(player.GetCoord(), player.width, player.height, ball.GetCoord(), ball.dimension, ball.dimension))

@@ -26,7 +26,6 @@
 #include "Paddle.h"
 #include "Ball.h"
 #include "NeuralNet.h"
-#include "Matrix.h"
 
 class Game
 {
@@ -52,6 +51,6 @@ private:
 	Paddle player;
 	Paddle ai;
 	Ball ball;
-	//NeuralNet brain;
+	NeuralNet brain;
 	/********************************/
 };
