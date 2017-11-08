@@ -1,12 +1,16 @@
 #include "NeuralNet.h"
 #include "Graphics.h"
+#include "Coord.h"
 #include <cmath>
+#include "ColorConversion.h"
+
 
 
 NeuralNet::NeuralNet()
 	:
 	rng(rd()),
-	dist(-5.0f,5.0f)
+	dist(-7.0f,7.0f),
+	tiny(-.05,.05)
 {
 	weights[0] = new Matrix<float>(neurons, INPUTS);
 	for (int i = 0; i < LAYERS - 1; i++) {
@@ -72,6 +76,46 @@ int NeuralNet::Think()
 		}
 	}
 	return decision;
+}
+
+void NeuralNet::DrawNeuralNet(Graphics & gfx)
+{
+	int hD = int(300.0f / (LAYERS + 2));
+	int vD;
+	int vD2;
+	int neuronRadius = 6;
+	for (int i = 0; i < LAYERS + 2; i++)
+	{
+		int size = activations[i]->GetSize();
+		int size2;
+		if (i < LAYERS + 1)  size2 = activations[i + 1]->GetSize();
+		vD = int(200.0f / size);
+		if (i < LAYERS + 1) vD2 = int(200.0f / size2);
+		for (int j = 0; j < size; j++) {
+			unsigned char act = unsigned char(255*((*activations[i])(j)));
+			Color col = { act,act,act };
+			Coord n1 = { float(hD*i + hD / 2), float(vD*j + vD / 2) };
+			if (i < LAYERS + 1) 
+				for (int k = 0; k < size2; k++) {
+					Coord n2 = { float(hD*(i + 1) + hD / 2), float(vD2*k + vD2 / 2) };
+					float weight = (*weights[i])(k, j);
+					Color Cweight;
+					double h, s, v;
+					s = tanh(abs(weight) / 4);
+					v = 0.8*((*activations[i])(j)*tanh(abs(weight) / 4)) + .2;
+					if (weight > 0) {
+						h = 0;
+					}
+					else {
+						h = 240;
+					}
+					rgb c = hsv2rgb({h, s, v});
+					Cweight = {unsigned char(255*c.r),unsigned char(255 * c.g),unsigned char(255 * c.b)};
+					gfx.DrawLine((int)n1.x, (int)n1.y, (int)n2.x, (int)n2.y, Cweight);
+				}
+			gfx.DrawCircle(int(n1.x), int(n1.y), neuronRadius, 4, col);
+		}
+	}
 }
 
 void NeuralNet::TakeInputs(const Ball & ball, const Paddle & padd)

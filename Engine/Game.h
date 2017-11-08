@@ -51,6 +51,6 @@ private:
 	Paddle player;
 	Paddle ai;
 	Ball ball;
-	NeuralNet brain;
+	NeuralNet * brain;
 	/********************************/
 };

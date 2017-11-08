@@ -4,7 +4,6 @@
 #include "Paddle.h"
 #include "Matrix.h"
 
-
 #define INPUTS 5
 #define OUTPUTS 3
 #define LAYERS 2
@@ -19,8 +18,9 @@ class NeuralNet
 public:
 	NeuralNet();
 	~NeuralNet();
-	int Think();
 	void TakeInputs(const Ball& ball, const Paddle& padd);
+	int Think();
+	void DrawNeuralNet(Graphics& gfx);
 private:
 	float Sigmoid(float x);
 	float XLinmoid(float x);
@@ -29,6 +29,7 @@ private:
 	std::random_device rd;
 	std::mt19937 rng;
 	std::uniform_real_distribution<float> dist;
+	std::uniform_real_distribution<float> tiny;
 	Matrix<float> * weights[LAYERS + 1];
 	Matrix<float> * biases[LAYERS + 1];
 	Matrix<float> * activations[LAYERS + 2];

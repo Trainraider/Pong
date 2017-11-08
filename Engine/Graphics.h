@@ -61,6 +61,8 @@ public:
 		PutRect(x, y, width, height, { unsigned char(r),unsigned char(g),unsigned char(b) });
 	}
 	void PutRect(int x, int y, int width, int height, Color c);
+	void DrawLine(int x0, int y0, int x1, int y1, Color color);
+	void DrawCircle(int x, int y, int r, int sides, Color color);
 	~Graphics();
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;

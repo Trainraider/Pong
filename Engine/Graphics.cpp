@@ -327,6 +327,57 @@ void Graphics::PutRect(int x, int y, int width, int height, Color c)
 	}
 }
 
+void Graphics::DrawLine(int x0, int y0, int x1, int y1, Color color)
+{
+	float m = (float(y1 - y0) / float(x1 - x0));
+	int x;
+	int y;
+	if (abs(x0 - x1) > abs(y0 - y1))
+	{
+		int xm;
+		if (x0 < x1) xm = x0; else xm = x1;
+		for (x = 0; x < abs(x0 - x1); x++)
+		{
+			y = int(m*(x + xm - x0) + y0);
+			PutPixel(x + xm, y, color);
+		}
+	}
+	else
+	{
+		int ym;
+		if (y0 < y1) ym = y0; else ym = y1;
+		for (y = 0; y < abs(y0 - y1); y++)
+		{
+			x = int((y + ym - y0) / m + x0);
+			PutPixel(x, y + ym, color);
+		}
+	}
+}
+
+void Graphics::DrawCircle(int x, int y, int r, int sides, Color color)
+{
+	const float _2pi = 6.28318530717958647692;
+	float change = float(_2pi / 4) / sides;
+	float angle = 0;
+	int x0 = r;
+	int y0 = 0;
+	int y1 = (int)r*sin(angle);
+	int x1 = (int)r*cos(angle);
+	int i;
+	for (i = 0; i <= sides; i++)
+	{
+		DrawLine(x + x0, y + y0, x + x1, y + y1, color);
+		DrawLine(x - x0, y + y0, x - x1, y + y1, color);
+		DrawLine(x + x0, y - y0, x + x1, y - y1, color);
+		DrawLine(x - x0, y - y0, x - x1, y - y1, color);
+		angle += change;
+		x0 = x1;
+		y0 = y1;
+		y1 = (int)r*sin(angle);
+		x1 = (int)r*cos(angle);
+	}
+}
+
 
 //////////////////////////////////////////////////
 //           Graphics Exception

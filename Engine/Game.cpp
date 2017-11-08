@@ -27,9 +27,9 @@ Game::Game(MainWindow& wnd)
 	gfx(wnd),
 	player(gfx, ball, 50),
 	ai(gfx, ball, Graphics::ScreenWidth - Paddle::width - 50),
-	ball(gfx),
-	brain()
+	ball(gfx)
 {
+	brain = new NeuralNet();
 }
 
 void Game::Go()
@@ -44,8 +44,12 @@ void Game::UpdateModel()
 {
 	//if (wnd.kbd.KeyIsPressed('W')) player.MoveBy(-4);
 	//if (wnd.kbd.KeyIsPressed('S')) player.MoveBy(4);
-	brain.TakeInputs(ball, player);
-	switch (brain.Think())
+	if (wnd.kbd.KeyIsPressed(' ')) {
+		delete brain;
+		brain = new NeuralNet();
+	}
+	brain->TakeInputs(ball, player);
+	switch (brain->Think())
 	{
 	case UP: player.MoveBy(-4); break;
 	case DOWN: player.MoveBy(4); break;
@@ -82,6 +86,7 @@ void Game::ComposeFrame()
 	ai.Draw();
 	ball.Draw();
 	DrawNet();
+	brain->DrawNeuralNet(gfx);
 }
 
 bool Game::Collision(Coord coord0, short width0, short height0, Coord coord1, short width1, short height1)

@@ -144,6 +144,7 @@
     <ClInclude Include="Ball.h" />
     <ClInclude Include="ChiliException.h" />
     <ClInclude Include="ChiliWin.h" />
+    <ClInclude Include="ColorConversion.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="Coord.h" />
     <ClInclude Include="DXErr.h" />
