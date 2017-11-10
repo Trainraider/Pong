@@ -12,8 +12,11 @@ NeuralNet::NeuralNet()
 	tiny(-.05,.05)
 {
 	using namespace std;
-	fileName << "brain" << to_string(LAYERS) << "-" << to_string(neurons) << ".ini";
-	
+	fileName << "brain" << to_string(LAYERS) << "-" << to_string(neurons) << ".nnet";
+	FileDump file;
+	//if (!file.Exists(fileName.str().c_str())) {
+		file.Create(fileName.str().c_str());
+	//}
 	weights[0] = new Matrix<float>(neurons, INPUTS);
 	for (int i = 0; i < LAYERS - 1; i++) {
 		weights[i + 1] = new Matrix<float>(neurons,neurons);
@@ -36,9 +39,10 @@ NeuralNet::NeuralNet()
 		}
 		size = biases[i]->GetSize();
 		for (int j = 0; j < size; j++) {
-			(*biases[i])(j) = 0;//dist(rng)/5;
+			(*biases[i])(j) = dist(rng) / 5.0f;
 		}
 	}
+	OverwriteFile();
 }
 
 NeuralNet::~NeuralNet()
@@ -78,6 +82,19 @@ int NeuralNet::Think()
 		}
 	}
 	return decision;
+}
+
+void NeuralNet::OverwriteFile()
+{
+	FileDump file;
+	file.Open(fileName.str().c_str());
+	for (int i = 0; i < LAYERS + 1; i++) {
+		file.DumpArray(weights[i]->data, weights[i]->GetSize());
+	}
+	for (int i = 0; i < LAYERS + 1; i++) {
+		file.DumpArray(biases[i]->data, biases[i]->GetSize());
+	}
+	file.Close();
 }
 
 void NeuralNet::DrawNeuralNet(Graphics & gfx, int x, int y)

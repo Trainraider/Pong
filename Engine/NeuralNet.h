@@ -3,6 +3,7 @@
 #include "Ball.h"
 #include "Paddle.h"
 #include "Matrix.h"
+#include "Files.h"
 #include <sstream>
 
 #define INPUTS 5
@@ -21,6 +22,7 @@ public:
 	~NeuralNet();
 	void TakeInputs(const Ball& ball, const Paddle& padd);
 	int Think();
+	void OverwriteFile();
 	void DrawNeuralNet(Graphics& gfx, int x, int y);
 private:
 	float Sigmoid(float x);

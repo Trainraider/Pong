@@ -6,11 +6,8 @@ using namespace std;
 class FileDump {
 public:
 	bool Exists(const char *fileName);
-	bool Exists(const std::string fileName);
 	bool Create(const char *fileName);
-	bool Create(const std::string fileName);
 	bool Open(const char *fileName);
-	bool Open(const std::string fileName);
 	void Close();
 	template <typename T>
 	void DumpArray(T *arr, int nElements);
@@ -27,32 +24,17 @@ inline bool FileDump::Exists(const char *fileName)
 	return infile.good();
 }
 
-inline bool FileDump::Exists(const std::string fileName)
-{
-	return Exists(fileName.c_str());
-}
-
 inline bool FileDump::Create(const char * fileName)
 {
-	std::ifstream infile;
-	infile.open(fileName, std::ios::out);
-	return infile.is_open();
-}
-
-inline bool FileDump::Create(const std::string fileName)
-{
-	return Create(fileName.c_str());
+	std::ofstream outfile;
+	outfile.open(fileName, std::ios_base::out);
+	return outfile.is_open();
 }
 
 inline bool FileDump::Open(const char * fileName)
 {
 	file.open(fileName, std::ios::binary | std::ios::in | std::ios::out);
 	return file.is_open();
-}
-
-inline bool FileDump::Open(const std::string fileName)
-{
-	return Open(fileName.c_str());
 }
 
 inline void FileDump::Close()

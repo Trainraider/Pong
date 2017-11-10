@@ -23,8 +23,8 @@ public:
 	T& operator()(int i)const;
 	void operator=(Matrix<T>& m);
 	Matrix<T>& operator=(T * arr);
-private:
 	T * data;
+private:
 	int rows, cols, elements;
 
 };
