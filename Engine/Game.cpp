@@ -86,7 +86,7 @@ void Game::ComposeFrame()
 	ai.Draw();
 	ball.Draw();
 	DrawNet();
-	brain->DrawNeuralNet(gfx);
+	brain->DrawNeuralNet(gfx,20,20);
 }
 
 bool Game::Collision(Coord coord0, short width0, short height0, Coord coord1, short width1, short height1)

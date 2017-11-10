@@ -1,5 +1,4 @@
 #include "NeuralNet.h"
-#include "Graphics.h"
 #include "Coord.h"
 #include <cmath>
 #include "ColorConversion.h"
@@ -12,6 +11,9 @@ NeuralNet::NeuralNet()
 	dist(-7.0f,7.0f),
 	tiny(-.05,.05)
 {
+	using namespace std;
+	fileName << "brain" << to_string(LAYERS) << "-" << to_string(neurons) << ".ini";
+	
 	weights[0] = new Matrix<float>(neurons, INPUTS);
 	for (int i = 0; i < LAYERS - 1; i++) {
 		weights[i + 1] = new Matrix<float>(neurons,neurons);
@@ -34,7 +36,7 @@ NeuralNet::NeuralNet()
 		}
 		size = biases[i]->GetSize();
 		for (int j = 0; j < size; j++) {
-			(*biases[i])(j) = dist(rng);
+			(*biases[i])(j) = 0;//dist(rng)/5;
 		}
 	}
 }
@@ -78,7 +80,7 @@ int NeuralNet::Think()
 	return decision;
 }
 
-void NeuralNet::DrawNeuralNet(Graphics & gfx)
+void NeuralNet::DrawNeuralNet(Graphics & gfx, int x, int y)
 {
 	int hD = int(300.0f / (LAYERS + 2));
 	int vD;
@@ -104,16 +106,16 @@ void NeuralNet::DrawNeuralNet(Graphics & gfx)
 					s = tanh(abs(weight) / 4);
 					v = 0.8*((*activations[i])(j)*tanh(abs(weight) / 4)) + .2;
 					if (weight > 0) {
-						h = 0;
+						h = 180;
 					}
 					else {
-						h = 240;
+						h = 0;
 					}
 					rgb c = hsv2rgb({h, s, v});
 					Cweight = {unsigned char(255*c.r),unsigned char(255 * c.g),unsigned char(255 * c.b)};
-					gfx.DrawLine((int)n1.x, (int)n1.y, (int)n2.x, (int)n2.y, Cweight);
+					gfx.DrawLine((int)n1.x + x, (int)n1.y + y, (int)n2.x + x, (int)n2.y + y, Cweight);
 				}
-			gfx.DrawCircle(int(n1.x), int(n1.y), neuronRadius, 4, col);
+			gfx.DrawCircle(int(n1.x) + x, int(n1.y) + y, neuronRadius, 4, col);
 		}
 	}
 }
