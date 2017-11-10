@@ -13,10 +13,11 @@ NeuralNet::NeuralNet()
 {
 	using namespace std;
 	fileName << "brain" << to_string(LAYERS) << "-" << to_string(neurons) << ".nnet";
-	FileDump file;
+	//FileDump file;
 	//if (!file.Exists(fileName.str().c_str())) {
-		file.Create(fileName.str().c_str());
+	//	file.Create(fileName.str().c_str());
 	//}
+
 	weights[0] = new Matrix<float>(neurons, INPUTS);
 	for (int i = 0; i < LAYERS - 1; i++) {
 		weights[i + 1] = new Matrix<float>(neurons,neurons);
@@ -42,7 +43,8 @@ NeuralNet::NeuralNet()
 			(*biases[i])(j) = dist(rng) / 5.0f;
 		}
 	}
-	OverwriteFile();
+	//OverwriteFile();
+	//LoadFile();
 }
 
 NeuralNet::~NeuralNet()
@@ -93,6 +95,19 @@ void NeuralNet::OverwriteFile()
 	}
 	for (int i = 0; i < LAYERS + 1; i++) {
 		file.DumpArray(biases[i]->data, biases[i]->GetSize());
+	}
+	file.Close();
+}
+
+void NeuralNet::LoadFile()
+{
+	FileDump file;
+	file.Open(fileName.str().c_str());
+	for (int i = 0; i < LAYERS + 1; i++) {
+		file.FillArray(weights[i]->data, weights[i]->GetSize());
+	}
+	for (int i = 0; i < LAYERS + 1; i++) {
+		file.FillArray(biases[i]->data, biases[i]->GetSize());
 	}
 	file.Close();
 }

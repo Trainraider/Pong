@@ -124,8 +124,5 @@
     <None Include="brain2-10.nnet">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="brain1-1.nnet">
-      <Filter>Resource Files</Filter>
-    </None>
   </ItemGroup>
 </Project>

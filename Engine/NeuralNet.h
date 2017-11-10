@@ -23,6 +23,7 @@ public:
 	void TakeInputs(const Ball& ball, const Paddle& padd);
 	int Think();
 	void OverwriteFile();
+	void LoadFile();
 	void DrawNeuralNet(Graphics& gfx, int x, int y);
 private:
 	float Sigmoid(float x);
