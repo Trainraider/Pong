@@ -20,7 +20,7 @@ class NeuralNet
 public:
 	NeuralNet();
 	~NeuralNet();
-	void TakeInputs(const Ball& ball, const Paddle& padd);
+	void TakeInputs(const Ball& ball, const Paddle& padd,bool invertX);
 	int Think();
 	void OverwriteFile();
 	void LoadFile();

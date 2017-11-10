@@ -8,16 +8,11 @@
 NeuralNet::NeuralNet()
 	:
 	rng(rd()),
-	dist(-7.0f,7.0f),
+	dist(-4.0f,4.0f),
 	tiny(-.05,.05)
 {
 	using namespace std;
-	fileName << "brain" << to_string(LAYERS) << "-" << to_string(neurons) << ".nnet";
-	//FileDump file;
-	//if (!file.Exists(fileName.str().c_str())) {
-	//	file.Create(fileName.str().c_str());
-	//}
-
+	
 	weights[0] = new Matrix<float>(neurons, INPUTS);
 	for (int i = 0; i < LAYERS - 1; i++) {
 		weights[i + 1] = new Matrix<float>(neurons,neurons);
@@ -43,8 +38,6 @@ NeuralNet::NeuralNet()
 			(*biases[i])(j) = dist(rng) / 5.0f;
 		}
 	}
-	//OverwriteFile();
-	//LoadFile();
 }
 
 NeuralNet::~NeuralNet()
@@ -152,13 +145,16 @@ void NeuralNet::DrawNeuralNet(Graphics & gfx, int x, int y)
 	}
 }
 
-void NeuralNet::TakeInputs(const Ball & ball, const Paddle & padd)
+void NeuralNet::TakeInputs(const Ball & ball, const Paddle & padd,bool invertX)
 {
+
 	float inputs[INPUTS];
 	inputs[0] = YLinmoid(padd.GetCoord().y);
-	inputs[1] = XLinmoid(ball.GetCoord().x);
+	if (invertX) inputs[1] = XLinmoid(ball.GetCoord().x);
+	else inputs[1] = XLinmoid(Graphics::ScreenWidth - ball.GetCoord().x);
 	inputs[2] = YLinmoid(ball.GetCoord().y);
-	inputs[3] = Sigmoid(ball.GetSpeed().x);
+	if (invertX) inputs[3] = Sigmoid(ball.GetSpeed().x);
+	else inputs[3] = Sigmoid(-ball.GetSpeed().x);
 	inputs[4] = Sigmoid(ball.GetSpeed().y);
 
 	*activations[0] = inputs;
