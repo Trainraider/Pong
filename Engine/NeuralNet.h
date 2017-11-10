@@ -16,15 +16,17 @@
 
 class NeuralNet
 {
-	static constexpr int neurons = 10;
+	static constexpr int neurons = 5;
 public:
 	NeuralNet();
 	~NeuralNet();
 	void TakeInputs(const Ball& ball, const Paddle& padd,bool invertX);
 	int Think();
-	void OverwriteFile();
-	void LoadFile();
+	void OverwriteFile(const string& fileName);
+	void LoadFile(const string& fileName);
 	void DrawNeuralNet(Graphics& gfx, int x, int y);
+	void Mutate();
+	void operator=(NeuralNet& net);
 private:
 	float Sigmoid(float x);
 	float XLinmoid(float x);
@@ -35,6 +37,7 @@ private:
 	std::mt19937 rng;
 	std::uniform_real_distribution<float> dist;
 	std::uniform_real_distribution<float> tiny;
+	std::uniform_real_distribution<float> chance;
 	Matrix<float> * weights[LAYERS + 1];
 	Matrix<float> * biases[LAYERS + 1];
 	Matrix<float> * activations[LAYERS + 2];

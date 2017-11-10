@@ -9,7 +9,8 @@ NeuralNet::NeuralNet()
 	:
 	rng(rd()),
 	dist(-4.0f,4.0f),
-	tiny(-.05,.05)
+	tiny(-0.1f,0.1f),
+	chance(0.0f,100.0f)
 {
 	using namespace std;
 	
@@ -79,10 +80,10 @@ int NeuralNet::Think()
 	return decision;
 }
 
-void NeuralNet::OverwriteFile()
+void NeuralNet::OverwriteFile(const string& fileName)
 {
 	FileDump file;
-	file.Open(fileName.str().c_str());
+	file.Open(fileName.c_str());
 	for (int i = 0; i < LAYERS + 1; i++) {
 		file.DumpArray(weights[i]->data, weights[i]->GetSize());
 	}
@@ -92,10 +93,10 @@ void NeuralNet::OverwriteFile()
 	file.Close();
 }
 
-void NeuralNet::LoadFile()
+void NeuralNet::LoadFile(const string& fileName)
 {
 	FileDump file;
-	file.Open(fileName.str().c_str());
+	file.Open(fileName.c_str());
 	for (int i = 0; i < LAYERS + 1; i++) {
 		file.FillArray(weights[i]->data, weights[i]->GetSize());
 	}
@@ -141,6 +142,36 @@ void NeuralNet::DrawNeuralNet(Graphics & gfx, int x, int y)
 					gfx.DrawLine((int)n1.x + x, (int)n1.y + y, (int)n2.x + x, (int)n2.y + y, Cweight);
 				}
 			gfx.DrawCircle(int(n1.x) + x, int(n1.y) + y, neuronRadius, 4, col);
+		}
+	}
+}
+
+void NeuralNet::Mutate()
+{
+	for (int i = 0; i < LAYERS + 1; i++) {
+		int size = weights[i]->GetSize();
+		for (int j = 0; j < size; j++) {
+			if (chance(rng) < 30.0f)
+			(*weights[i])(j) += tiny(rng);
+		}
+		size = biases[i]->GetSize();
+		for (int j = 0; j < size; j++) {
+			if (chance(rng) < 30.0f)
+			(*biases[i])(j) += tiny(rng);
+		}
+	}
+}
+
+void NeuralNet::operator=(NeuralNet & net)
+{
+	for (int i = 0; i < LAYERS + 1; i++) {
+		int size = weights[i]->GetSize();
+		for (int j = 0; j < size; j++) {
+			(*weights[i])(j) = (*net.weights[i])(j);
+		}
+		size = biases[i]->GetSize();
+		for (int j = 0; j < size; j++) {
+			(*biases[i])(j) = (*net.biases[i])(j);
 		}
 	}
 }
