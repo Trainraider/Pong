@@ -25,11 +25,13 @@ Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
-	player(gfx, ball, 50),
-	ai(gfx, ball, Graphics::ScreenWidth - Paddle::width - 50),
+	left(gfx, ball, 50),
+	right(gfx, ball, Graphics::ScreenWidth - Paddle::width - 50),
 	ball(gfx)
 {
-	brain = new NeuralNet();
+	for (int i = 0; i < brainCount; i++) {
+		brains[i].brain = new NeuralNet();
+	}
 }
 
 void Game::Go()
@@ -42,28 +44,21 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	//if (wnd.kbd.KeyIsPressed('W')) player.MoveBy(-4);
-	//if (wnd.kbd.KeyIsPressed('S')) player.MoveBy(4);
-	if (wnd.kbd.KeyIsPressed(' ')) {
-		delete brain;
-		brain = new NeuralNet();
-	}
-	brain->TakeInputs(ball, player);
-	switch (brain->Think())
-	{
-	case UP: player.MoveBy(-4); break;
-	case DOWN: player.MoveBy(4); break;
-	case NOTHING: break;
-	}
-	ai.MoveAuto(4);
+	//if (wnd.kbd.KeyIsPressed('W')) left.MoveBy(-4);
+	//if (wnd.kbd.KeyIsPressed('S')) left.MoveBy(4);
+	//right.MoveAuto(4);
+	brains[activeL].brain->TakeInputs(ball, left, false);
+	brains[activeR].brain->TakeInputs(ball, right, true);
+	NetToPaddle(*brains[activeL].brain, left);
+	NetToPaddle(*brains[activeR].brain, right);
 	ball.Move();
-	if (Collision(player.GetCoord(), player.width, player.height, ball.GetCoord(), ball.dimension, ball.dimension))
+	if (Collision(left.GetCoord(), left.width, left.height, ball.GetCoord(), ball.dimension, ball.dimension))
 	{
-		ball.Collision(player, true);
+		ball.Collision(left, true);
 	}
-	if (Collision(ai.GetCoord(), ai.width, ai.height, ball.GetCoord(), ball.dimension, ball.dimension))
+	if (Collision(right.GetCoord(), right.width, right.height, ball.GetCoord(), ball.dimension, ball.dimension))
 	{
-		ball.Collision(ai, false);
+		ball.Collision(right, false);
 	}
 
 
@@ -82,11 +77,12 @@ void Game::DrawNet()
 
 void Game::ComposeFrame()
 {
-	player.Draw();
-	ai.Draw();
+	left.Draw();
+	right.Draw();
 	ball.Draw();
 	DrawNet();
-	brain->DrawNeuralNet(gfx,20,20);
+	brains[activeL].brain->DrawNeuralNet(gfx, 40, 20);
+	brains[activeR].brain->DrawNeuralNet(gfx, 460, 20);
 }
 
 bool Game::Collision(Coord coord0, short width0, short height0, Coord coord1, short width1, short height1)
@@ -103,4 +99,14 @@ bool Game::Collision(Coord coord0, short width0, short height0, Coord coord1, sh
 		return true;
 	}
 	return false;
+}
+
+void Game::NetToPaddle(NeuralNet & net, Paddle & pad)
+{
+	switch (net.Think())
+	{
+	case UP: pad.MoveBy(-4); break;
+	case DOWN: pad.MoveBy(4); break;
+	case NOTHING: break;
+	}
 }

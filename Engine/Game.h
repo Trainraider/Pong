@@ -27,6 +27,11 @@
 #include "Ball.h"
 #include "NeuralNet.h"
 
+struct Net {
+	NeuralNet * brain;
+	unsigned int fitness = 0;
+};
+
 class Game
 {
 public:
@@ -42,15 +47,19 @@ private:
 	void DrawNet();
 	bool Collision(Coord coord0, short width0, short height0,
 		Coord coord1, short width1, short height1);
+	void NetToPaddle(NeuralNet& net, Paddle& pad);
 	/********************************/
 private:
 	MainWindow& wnd;
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
-	Paddle player;
-	Paddle ai;
+	Paddle left;
+	Paddle right;
 	Ball ball;
-	NeuralNet * brain;
+	static constexpr int brainCount = 20;
+	int activeL = 0;
+	int activeR = 1;
+	Net brains[brainCount];
 	/********************************/
 };
