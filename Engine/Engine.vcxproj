@@ -150,6 +150,7 @@
     <ClInclude Include="DXErr.h" />
     <ClInclude Include="Files.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GoalInfo.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="MainWindow.h" />
@@ -238,9 +239,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Chili.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="brain2-10.nnet" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

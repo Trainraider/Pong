@@ -2,6 +2,7 @@
 #include "Graphics.h"
 #include "Coord.h"
 #include <random>
+#include "GoalInfo.h"
 class Paddle;
 
 class Ball
@@ -12,13 +13,14 @@ public:
 	Coord GetSpeed() const;
 	int GetRespawnCount() const;
 	void Move();
+	GoalInfo HitGoal();
 	void Draw();
+	bool GetWasHit();
 	void Collision( Paddle& paddle, bool leftSideOfScreen);
 public:
 	static constexpr short dimension = 20;
 private:
 	void BounceOffWall();
-	void HitGoal();
 	void Respawn();
 	float CenterX();
 	float CenterY();
@@ -27,6 +29,7 @@ private:
 	std::random_device rd;
 	std::mt19937 rng;
 	std::uniform_real_distribution<float> sDist;
+	bool wasHit = false;
 	int respawnCount = 0;
 	float x, y;
 	float hSpeed, vSpeed;

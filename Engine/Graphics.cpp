@@ -361,8 +361,8 @@ void Graphics::DrawCircle(int x, int y, int r, int sides, Color color)
 	float angle = 0;
 	int x0 = r;
 	int y0 = 0;
-	int y1 = (int)r*sin(angle);
-	int x1 = (int)r*cos(angle);
+	int y1 = int(r*sin(angle));
+	int x1 = int(r*cos(angle));
 	int i;
 	for (i = 0; i <= sides; i++)
 	{
@@ -373,8 +373,8 @@ void Graphics::DrawCircle(int x, int y, int r, int sides, Color color)
 		angle += change;
 		x0 = x1;
 		y0 = y1;
-		y1 = (int)r*sin(angle);
-		x1 = (int)r*cos(angle);
+		y1 = int(r*sin(angle));
+		x1 = int(r*cos(angle));
 	}
 }
 

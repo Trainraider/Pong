@@ -31,8 +31,14 @@ void Ball::Draw()
 	gfx.PutRect((short)x, (short)y, dimension, dimension, 0xFFFFFF);
 }
 
+bool Ball::GetWasHit()
+{
+	return wasHit;
+}
+
 void Ball::Collision(Paddle& paddle, bool leftSideOfScreen)
 {
+	wasHit = true;
 	if (leftSideOfScreen)
 	{
 		x = paddle.GetCoord().x + paddle.width;
@@ -61,16 +67,23 @@ void Ball::BounceOffWall()
 	}
 }
 
-void Ball::HitGoal()
+GoalInfo Ball::HitGoal()
 {
+	bool hit;
 	if (x < 0 || x + dimension >= Graphics::ScreenWidth)
 	{
+		hit = wasHit;
+		bool left = (x < 0);
 		Respawn();
+		return {true,left,hit};
 	}
+	else
+		return { false,false,false };
 }
 
 void Ball::Respawn()
 {
+	wasHit = false;
 	do
 	{
 		hSpeed = sDist(rng);
@@ -96,5 +109,4 @@ void Ball::Move()
 	x += hSpeed;
 	y += vSpeed;
 	BounceOffWall();
-	HitGoal();
 }

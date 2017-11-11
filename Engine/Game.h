@@ -29,7 +29,11 @@
 
 struct Net {
 	NeuralNet * brain;
-	unsigned int fitness = 0;
+	bool disqualified = true;
+	int lastOutput = -1;
+	int hits = 0;
+	int wins = 0;
+	int losses = 0;
 };
 
 class Game
@@ -46,9 +50,12 @@ private:
 	/*  User Functions              */
 	void DrawNet();
 	bool Collision(Ball& ball, Paddle& padd);
-	void NetToPaddle(NeuralNet& net, Paddle& pad);
+	void NetToPaddle(Net& net, Paddle& pad);
 	void NewMatch();
 	void NextGen();
+	void ResetBrain(int i);
+	float GetFitness(int i);
+	float FitnessSigmoid(float x);
 	/********************************/
 private:
 	MainWindow& wnd;
@@ -66,7 +73,7 @@ private:
 	bool pressedSpace = false;
 	bool matchIsNew = true;
 	int generation = 0;
-	int roundsPerMatch = 3;
+	int roundsPerMatch = 30;
 	int activeL = 0;
 	int activeR = 1;
 	Net brains[brainCount];

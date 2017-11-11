@@ -20,6 +20,7 @@
  ******************************************************************************************/
 #include "MainWindow.h"
 #include "Game.h"
+#include "GoalInfo.h"
 
 Game::Game(MainWindow& wnd)
 	:
@@ -65,20 +66,39 @@ void Game::UpdateModel()
 		pressedSpace = false;
 	}
 	
-	brains[activeL].brain->TakeInputs(ball, left, false);
-	brains[activeR].brain->TakeInputs(ball, right, true);
-	NetToPaddle(*brains[activeL].brain, left);
-	NetToPaddle(*brains[activeR].brain, right);
+	brains[activeL].brain->TakeInputs(ball, left, right, false);
+	brains[activeR].brain->TakeInputs(ball, right, left, true);
+	NetToPaddle(brains[activeL], left);
+	NetToPaddle(brains[activeR], right);
 	ball.Move();
+	GoalInfo goal = ball.HitGoal();
+	if (goal.hitGoal && goal.wasHit) {
+		if (goal.left) {
+			brains[activeR].wins += 1;
+			brains[activeL].losses += 1;
+		}
+		else {
+			brains[activeL].wins += 1;
+			brains[activeR].losses += 1;
+		}
+	}
+	if (goal.hitGoal && !goal.wasHit) {
+		if (goal.left) {
+			brains[activeL].losses += 1;
+		}
+		else {
+			brains[activeR].losses += 1;
+		}
+	}
 	if (Collision(ball,left))
 	{
 		ball.Collision(left, true);
-		brains[activeL].fitness += 1;
+		brains[activeL].hits += 1;
 	}
 	if (Collision(ball,right))
 	{
 		ball.Collision(right, false);
-		brains[activeR].fitness += 1;
+		brains[activeR].hits += 1;
 	}
 	if (ball.GetRespawnCount()%roundsPerMatch == 0
 		&& matchIsNew == false) {
@@ -125,32 +145,52 @@ bool Game::Collision(Ball & ball, Paddle & padd)
 
 }
 
-void Game::NetToPaddle(NeuralNet & net, Paddle & pad)
+void Game::NetToPaddle(Net & net, Paddle & pad)
 {
-	switch (net.Think())
+	int output = net.brain->Think();
+	switch (output)
 	{
 	case UP: pad.MoveBy(-4); break;
 	case DOWN: pad.MoveBy(4); break;
 	case NOTHING: break;
+	}
+	if (net.lastOutput == -1) {
+		net.lastOutput = output;
+	}
+	else {
+		if (net.lastOutput != output) {
+			net.disqualified = false;
+		}
 	}
 }
 
 void Game::NewMatch()
 {
 	matchIsNew = true;
-	NeuralNet * winner, * loser;
-	if (brains[activeL].fitness > brains[activeR].fitness) {
-		winner = brains[activeL].brain;
-		loser = brains[activeR].brain;
+	int winner, loser;
+	if (GetFitness(activeL) > GetFitness(activeR)) {
+		winner = activeL;
+		loser = activeR;
 	}
 	else {
-		winner = brains[activeR].brain;
-		loser = brains[activeL].brain;
+		winner = activeR;
+		loser = activeL;
 	}
-	*loser = *winner;
-	loser->Mutate();
-	activeL += 2;
-	activeR += 2;
+	if (brains[winner].disqualified)
+	{
+		brains[winner].brain->Randomize();
+		if (brains[loser].disqualified) {
+			brains[loser].brain->Randomize();
+		}
+		ResetBrain(winner);
+		ResetBrain(loser);
+	}
+	else {
+		*brains[loser].brain = *brains[winner].brain;
+		brains[loser].brain->Mutate();
+		activeL += 2;
+		activeR += 2;
+	}
 	if (activeL >= brainCount) {
 		activeL = 0;
 		activeR = 1;
@@ -163,18 +203,48 @@ void Game::NextGen()
 {
 	string fname = "BrainGen" + to_string(generation) + ".nnet";
 	FileDump file;
-	file.Create(fname.c_str());
-	file.Close();
 	int bestBrain = 0;
-	int bestFitness = 0;
+	float bestFitness = 0.0f;
 	for (int i = 0; i < brainCount; i++) {
-		swap(brains[i].brain, brains[rdmBrain(rng)].brain);
-		if (brains[i].fitness > bestFitness) {
-			bestFitness = brains[i].fitness;
+		if (GetFitness(i) > bestFitness && !brains[i].disqualified) {
+			bestFitness = GetFitness(i);
 			bestBrain = i;
 		}
-		brains[i].fitness = 0;
+		ResetBrain(i);
 	}
-	brains[bestBrain].brain->OverwriteFile(fname.c_str());
+	if (generation % 10 == 0)
+	{
+		file.Create(fname.c_str());
+		file.Close();
+		brains[bestBrain].brain->OverwriteFile(fname.c_str());
+	}
+	NeuralNet * store;
+	for (int i = 0; i < brainCount; i++) {
+		//swap(brains[i].brain, brains[rdmBrain(rng)].brain);
+		int num = rdmBrain(rng);
+		store = brains[i].brain;
+		brains[i].brain = brains[num].brain;
+		brains[num].brain = store;
+	}
 	generation++;
+}
+
+void Game::ResetBrain(int i)
+{
+	brains[i].disqualified = true;
+	brains[i].lastOutput = -1;
+	brains[i].hits = 0;
+	brains[i].wins = 0;
+	brains[i].losses = 0;
+}
+
+float Game::GetFitness(int i)
+{
+	return FitnessSigmoid(brains[i].wins) - FitnessSigmoid(brains[i].losses);
+	//return FitnessSigmoid(brains[i].hits);
+}
+
+float Game::FitnessSigmoid(float x)
+{
+	return std::tanh(x / 20.0f);
 }

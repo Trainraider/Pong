@@ -9,7 +9,7 @@ NeuralNet::NeuralNet()
 	:
 	rng(rd()),
 	dist(-4.0f,4.0f),
-	tiny(-0.8f,0.8f),
+	tiny(-0.04f,0.04f),
 	chance(0.0f,100.0f)
 {
 	using namespace std;
@@ -39,6 +39,7 @@ NeuralNet::NeuralNet()
 			(*biases[i])(j) = dist(rng) / 5.0f;
 		}
 	}
+	//LoadFile("BrainGen18200.nnet");
 }
 
 NeuralNet::~NeuralNet()
@@ -162,6 +163,20 @@ void NeuralNet::Mutate()
 	}
 }
 
+void NeuralNet::Randomize()
+{
+	for (int i = 0; i < LAYERS + 1; i++) {
+		int size = weights[i]->GetSize();
+		for (int j = 0; j < size; j++) {
+			(*weights[i])(j) = dist(rng);
+		}
+		size = biases[i]->GetSize();
+		for (int j = 0; j < size; j++) {
+			(*biases[i])(j) = dist(rng) / 5.0f;
+		}
+	}
+}
+
 void NeuralNet::operator=(NeuralNet & net)
 {
 	for (int i = 0; i < LAYERS + 1; i++) {
@@ -176,18 +191,18 @@ void NeuralNet::operator=(NeuralNet & net)
 	}
 }
 
-void NeuralNet::TakeInputs(const Ball & ball, const Paddle & padd,bool invertX)
+void NeuralNet::TakeInputs(const Ball & ball, const Paddle & self, const Paddle& other,bool invertX)
 {
 
 	float inputs[INPUTS];
-	inputs[0] = YLinmoid(padd.GetCoord().y);
+	inputs[0] = YLinmoid(self.GetCoord().y);
 	if (invertX) inputs[1] = XLinmoid(ball.GetCoord().x);
 	else inputs[1] = XLinmoid(Graphics::ScreenWidth - ball.GetCoord().x);
 	inputs[2] = YLinmoid(ball.GetCoord().y);
 	if (invertX) inputs[3] = Sigmoid(ball.GetSpeed().x);
 	else inputs[3] = Sigmoid(-ball.GetSpeed().x);
 	inputs[4] = Sigmoid(ball.GetSpeed().y);
-
+	inputs[5] = YLinmoid(other.GetCoord().y);
 	*activations[0] = inputs;
 }
 

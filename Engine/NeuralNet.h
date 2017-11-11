@@ -6,9 +6,9 @@
 #include "Files.h"
 #include <sstream>
 
-#define INPUTS 5
+#define INPUTS 6
 #define OUTPUTS 3
-#define LAYERS 2
+#define LAYERS 3
 
 #define UP 0
 #define DOWN 1
@@ -16,16 +16,17 @@
 
 class NeuralNet
 {
-	static constexpr int neurons = 5;
+	static constexpr int neurons = 7;
 public:
 	NeuralNet();
 	~NeuralNet();
-	void TakeInputs(const Ball& ball, const Paddle& padd,bool invertX);
+	void TakeInputs(const Ball& ball, const Paddle& self, const Paddle& other,bool invertX);
 	int Think();
 	void OverwriteFile(const string& fileName);
 	void LoadFile(const string& fileName);
 	void DrawNeuralNet(Graphics& gfx, int x, int y);
 	void Mutate();
+	void Randomize();
 	void operator=(NeuralNet& net);
 private:
 	float Sigmoid(float x);
@@ -44,3 +45,4 @@ private:
 
 
 };
+
