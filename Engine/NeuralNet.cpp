@@ -9,7 +9,7 @@ NeuralNet::NeuralNet()
 	:
 	rng(rd()),
 	dist(-4.0f,4.0f),
-	tiny(-0.1f,0.1f),
+	tiny(-0.8f,0.8f),
 	chance(0.0f,100.0f)
 {
 	using namespace std;

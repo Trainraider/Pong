@@ -8,6 +8,7 @@ Ball::Ball(Graphics & gfx)
 	sDist(-4.0f,4.0f)
 {
 	Respawn();
+	respawnCount = 0;
 }
 
 Coord Ball::GetCoord() const
@@ -18,6 +19,11 @@ Coord Ball::GetCoord() const
 Coord Ball::GetSpeed() const
 {
 	return {hSpeed,vSpeed};
+}
+
+int Ball::GetRespawnCount() const
+{
+	return respawnCount;
 }
 
 void Ball::Draw()
@@ -72,6 +78,7 @@ void Ball::Respawn()
 	} while (abs(hSpeed) < 1.5);
 	x = Graphics::ScreenWidth / 2 - radius;
 	y = Graphics::ScreenHeight / 2 - radius;
+	respawnCount += 1;
 }
 
 float Ball::CenterX()

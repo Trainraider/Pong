@@ -10,6 +10,7 @@ public:
 	Ball(Graphics& gfx);
 	Coord GetCoord() const;
 	Coord GetSpeed() const;
+	int GetRespawnCount() const;
 	void Move();
 	void Draw();
 	void Collision( Paddle& paddle, bool leftSideOfScreen);
@@ -26,6 +27,7 @@ private:
 	std::random_device rd;
 	std::mt19937 rng;
 	std::uniform_real_distribution<float> sDist;
+	int respawnCount = 0;
 	float x, y;
 	float hSpeed, vSpeed;
 	static constexpr short radius = dimension / 2;

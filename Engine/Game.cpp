@@ -23,6 +23,8 @@
 
 Game::Game(MainWindow& wnd)
 	:
+	rng(rd()),
+	rdmBrain(0, brainCount - 1),
 	wnd(wnd),
 	gfx(wnd),
 	left(gfx, ball, 50),
@@ -36,10 +38,16 @@ Game::Game(MainWindow& wnd)
 
 void Game::Go()
 {
-	gfx.BeginFrame();	
-	UpdateModel();
-	ComposeFrame();
-	gfx.EndFrame();
+	if (drawScreen){
+		gfx.BeginFrame();
+		UpdateModel();
+		ComposeFrame();
+		gfx.EndFrame();
+	}
+	else
+	{
+		UpdateModel();
+	}
 }
 
 void Game::UpdateModel()
@@ -47,22 +55,37 @@ void Game::UpdateModel()
 	//if (wnd.kbd.KeyIsPressed('W')) left.MoveBy(-4);
 	//if (wnd.kbd.KeyIsPressed('S')) left.MoveBy(4);
 	//right.MoveAuto(4);
+	if (wnd.kbd.KeyIsPressed(' ')) {
+		if (pressedSpace == false) {
+			pressedSpace = true;
+			drawScreen = !drawScreen;
+		}
+	}
+	else {
+		pressedSpace = false;
+	}
+	
 	brains[activeL].brain->TakeInputs(ball, left, false);
 	brains[activeR].brain->TakeInputs(ball, right, true);
 	NetToPaddle(*brains[activeL].brain, left);
 	NetToPaddle(*brains[activeR].brain, right);
 	ball.Move();
-	if (Collision(left.GetCoord(), left.width, left.height, ball.GetCoord(), ball.dimension, ball.dimension))
+	if (Collision(ball,left))
 	{
 		ball.Collision(left, true);
+		brains[activeL].fitness += 1;
 	}
-	if (Collision(right.GetCoord(), right.width, right.height, ball.GetCoord(), ball.dimension, ball.dimension))
+	if (Collision(ball,right))
 	{
 		ball.Collision(right, false);
+		brains[activeR].fitness += 1;
 	}
-
-
-
+	if (ball.GetRespawnCount()%roundsPerMatch == 0
+		&& matchIsNew == false) {
+		NewMatch();
+	}
+	if (ball.GetRespawnCount() % roundsPerMatch == 1)
+		matchIsNew = false;
 
 }
 
@@ -85,20 +108,21 @@ void Game::ComposeFrame()
 	brains[activeR].brain->DrawNeuralNet(gfx, 460, 20);
 }
 
-bool Game::Collision(Coord coord0, short width0, short height0, Coord coord1, short width1, short height1)
+bool Game::Collision(Ball & ball, Paddle & padd)
 {
-	float right0 = coord0.x + width0;
-	float bottom0 = coord0.y + height0;
-	float right1 = coord1.x + width1;
-	float bottom1 = coord1.y + height1;
-	if (coord0.x <= right1 &&
-		bottom0 >= coord1.y &&
-		coord0.y <= bottom1 &&
-		right0 >= coord1.x)
+	float right0 = ball.GetCoord().x + ball.dimension;
+	float bottom0 = ball.GetCoord().y + ball.dimension;
+	float right1 = padd.GetCoord().x + padd.width;
+	float bottom1 = padd.GetCoord().y + padd.height;
+	if (ball.GetCoord().x <= right1 &&
+		bottom0 >= padd.GetCoord().y &&
+		ball.GetCoord().y <= bottom1 &&
+		right0 >= padd.GetCoord().x)
 	{
 		return true;
 	}
 	return false;
+
 }
 
 void Game::NetToPaddle(NeuralNet & net, Paddle & pad)
@@ -109,4 +133,48 @@ void Game::NetToPaddle(NeuralNet & net, Paddle & pad)
 	case DOWN: pad.MoveBy(4); break;
 	case NOTHING: break;
 	}
+}
+
+void Game::NewMatch()
+{
+	matchIsNew = true;
+	NeuralNet * winner, * loser;
+	if (brains[activeL].fitness > brains[activeR].fitness) {
+		winner = brains[activeL].brain;
+		loser = brains[activeR].brain;
+	}
+	else {
+		winner = brains[activeR].brain;
+		loser = brains[activeL].brain;
+	}
+	*loser = *winner;
+	loser->Mutate();
+	activeL += 2;
+	activeR += 2;
+	if (activeL >= brainCount) {
+		activeL = 0;
+		activeR = 1;
+		NextGen();
+	}
+	
+}
+
+void Game::NextGen()
+{
+	string fname = "BrainGen" + to_string(generation) + ".nnet";
+	FileDump file;
+	file.Create(fname.c_str());
+	file.Close();
+	int bestBrain = 0;
+	int bestFitness = 0;
+	for (int i = 0; i < brainCount; i++) {
+		swap(brains[i].brain, brains[rdmBrain(rng)].brain);
+		if (brains[i].fitness > bestFitness) {
+			bestFitness = brains[i].fitness;
+			bestBrain = i;
+		}
+		brains[i].fitness = 0;
+	}
+	brains[bestBrain].brain->OverwriteFile(fname.c_str());
+	generation++;
 }

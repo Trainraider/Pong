@@ -45,19 +45,28 @@ private:
 	/********************************/
 	/*  User Functions              */
 	void DrawNet();
-	bool Collision(Coord coord0, short width0, short height0,
-		Coord coord1, short width1, short height1);
+	bool Collision(Ball& ball, Paddle& padd);
 	void NetToPaddle(NeuralNet& net, Paddle& pad);
+	void NewMatch();
+	void NextGen();
 	/********************************/
 private:
 	MainWindow& wnd;
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
+	random_device rd;
+	mt19937 rng;
+	uniform_int_distribution<int> rdmBrain;
 	Paddle left;
 	Paddle right;
 	Ball ball;
-	static constexpr int brainCount = 20;
+	static constexpr int brainCount = 200;
+	bool drawScreen = true;
+	bool pressedSpace = false;
+	bool matchIsNew = true;
+	int generation = 0;
+	int roundsPerMatch = 3;
 	int activeL = 0;
 	int activeR = 1;
 	Net brains[brainCount];
